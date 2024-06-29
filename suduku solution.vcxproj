@@ -127,7 +127,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="vector.erase太慢，尝试链表.cpp" />
+    <ClCompile Include="弃用。vector.erase太慢，尝试链表.cpp" />
     <ClCompile Include="suduku solution.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
