@@ -246,10 +246,6 @@ void DeleteWrong(TwoWay_Cyclic_LinkedList(&rows)[9], int& r, int(&suduku)[9][9])
 {
 	for (size_t c = 0; c < 9; c++) // 列
 	{
-		if (c >= 7)
-		{
-			c = c;
-		}
 		if (suduku[r][c] != 0) // 已知数字的行和列，即r和c
 		{
 			for (size_t rs = 0; rs < 9; rs++) // 遍历所有行，当前遍历的行是rs
@@ -285,13 +281,48 @@ void DeleteWrong(TwoWay_Cyclic_LinkedList(&rows)[9], int& r, int(&suduku)[9][9])
 	}
 }
 
+void DeleteWrong_Columns(TwoWay_Cyclic_LinkedList(&columns)[9], int& c, int(&suduku)[9][9])
+{
+	for (size_t r = 0; r < 9; r++) // 遍历，suduku的第r行
+	{
+		if (suduku[r][c] != 0) // 已知数字的行和列，即r和c
+		{
+			for (size_t cs = 0; cs < 9; cs++) // 遍历columns，当前为第cs列
+			{
+				columns[cs].PresentNode_Reset();
+				columns[cs].PresentNode_Next();
+				int t = columns[cs].count; // count会变化，所以不能直接用count
+				for (int i = 0; i < t; i++) // 根据节点数量，确定循环次数。
+				{
+					for (size_t cs_r = 0; cs_r <= 9; cs_r++) // 遍历columns的第cs列，当前为第cs_r行
+					{
+						if (cs_r == 9)
+						{
+							columns[cs].PresentNode_Next();
+							break;
+						}
+						else
+						{
+							if ((r == cs_r && cs == c && columns[cs].present_node->value[cs_r] != suduku[r][c]) /* 和已知数字同列同行、数字不同，则剔除 */
+								|| (r == cs_r && cs != c && columns[cs].present_node->value[cs_r] == suduku[r][c]) /* 和已知数字同行、不同列、数字相同，则剔除 */
+								|| (r != cs_r && cs == c && columns[cs].present_node->value[cs_r] == suduku[r][c]) /* 和已知数字不同行、同列、数字相同，则剔除 */
+								)
+							{
+								columns[cs].PresentNode_Delete();
+								break;
+							}
+						}
+					}
 
+				}
+			}
+		}
+	}
+}
 
 
 void FillDate(TwoWay_Cyclic_LinkedList(&rows)[9])
 {
-
-	PrintTime(); std::cout << "填充数据，每行362880种变化。" << std::endl;
 	int permutation[9] = { 1,2,3,4,5,6,7,8,9 };
 	for (size_t r = 0; r < 9; r++)
 	{
@@ -332,7 +363,7 @@ void EnumLoop(TwoWay_Cyclic_LinkedList(&rows)[9], std::vector<int> least, int(&s
 		{
 			rows_count[least[i]] = 999999;
 		}
-		int min_position = std::min_element(rows_count, rows_count + 9) - rows_count;
+		int min_position = (int)(std::min_element(rows_count, rows_count + 9) - rows_count);
 		least.push_back(min_position);
 
 		// 枚举变化最少的行
@@ -488,12 +519,50 @@ void EnumLoop(TwoWay_Cyclic_LinkedList(&rows)[9], std::vector<int> least, int(&s
 }
 
 
+node*** NewDelete_SaveNew(TwoWay_Cyclic_LinkedList(&rows)[9])
+{
+	node*** del = new node * *[9];
+	for (size_t i = 0; i < 9; i++)
+	{
+		del[i] = new node * [362880];
+	}
+	for (int i = 0; i < 9; i++)
+	{
+		rows[i].PresentNode_Reset();
+		for (int j = 0; j < 362880; j++)
+		{
+			rows[i].PresentNode_Next();
+			del[i][j] = rows[i].present_node;
+		}
+	}
+	return del;
+}
+
+void NewDelete_DeleteSave(node***& del)
+{
+	for (int i = 0; i < 9; i++)
+	{
+		for (int j = 0; j < 362880; j++)
+		{
+			//在C++中，delete 关键字用于释放由 new 操作符分配的内存。
+			//如果你提到的“delete会递归”是指在删除一个对象时，该对象内部可能还有指向其他对象的指针，并且这些对象也需要被删除，那么答案是不，delete 不会自动递归删除对象内部的成员。
+			//如果你需要删除一个对象及其内部所有引用的对象，你需要手动做这件事。
+			delete[] del[i][j]->value;
+		}
+		delete[] del[i];
+	}
+	delete[] del;
+}
+
+
 
 
 int main()
 {
 	std::cout << "Hello World!\n";
 
+
+#pragma region suduku
 	// 题目。需要填写的位置就是0。
 	int suduku[9][9] = {
 		{0,0,6,0,0,8,4,0,0},
@@ -507,9 +576,7 @@ int main()
 		{0,0,0,0,0,0,0,9,0}
 	};
 
-
-
-
+	// 答案。（用于测试）
 	//	int suduku[9][9] = {
 	//{3,7,9,4,8,1,5,2,6},
 	//{8,2,4,5,7,6,3,1,9},
@@ -521,28 +588,18 @@ int main()
 	//{5,3,2,8,1,7,9,6,4},
 	//{4,1,6,9,2,3,7,8,5}
 	//	};
-
-
-
-
+#pragma endregion
 
 
 	TwoWay_Cyclic_LinkedList rows[9];
 
-	
+
+	PrintTime(); std::cout << "填充数据，每行362880种变化。" << std::endl;
 	FillDate(rows);
 
+
 	PrintTime(); std::cout << "记录完整节点，用于最后释放资源。" << std::endl;
-	node* (*del)[362880] = new node * [9][362880];
-	for (int i = 0; i < 9; i++)
-	{
-		rows[i].PresentNode_Reset();
-		for (int j = 0; j < 362880; j++)
-		{
-			rows[i].PresentNode_Next();
-			del[i][j] = rows[i].present_node;
-		}
-	}
+	node*** del = NewDelete_SaveNew(rows);
 
 
 	PrintTime(); std::cout << "根据题目的数字，剔除不需要的变化。" << std::endl;
@@ -550,6 +607,76 @@ int main()
 	{
 		DeleteWrong(rows, r, suduku);
 	}
+
+
+	// 弃用。
+	// 和行剔除相比，虽然剔除的变化不同，但每个位置的剩余数字相同，所以该方法完全无用。
+	//PrintTime(); std::cout << "根据题目，按列剔除。" << std::endl;
+	//TwoWay_Cyclic_LinkedList columns[9];
+	//FillDate(columns);
+	//node*** del_c = NewDelete_SaveNew(columns);
+	//for (int i = 0; i < 9; i++) // 矩阵转置
+	//{
+	//	for (int j = i; j < 9; j++)
+	//	{
+	//		int temp = suduku[i][j];
+	//		suduku[i][j] = suduku[j][i];
+	//		suduku[j][i] = temp;
+	//	}
+	//}
+	//for (int i = 0; i < 9; i++)
+	//{
+	//	DeleteWrong(columns, i, suduku);
+	//}
+	//for (int i = 0; i < 9; i++) // 矩阵转置（恢复）
+	//{
+	//	for (int j = i; j < 9; j++)
+	//	{
+	//		int temp = suduku[i][j];
+	//		suduku[i][j] = suduku[j][i];
+	//		suduku[j][i] = temp;
+	//	}
+	//}
+	//bool have[9][9][9] = {false}; // [列][行][数字]
+	//for (size_t colunm = 0; colunm < 9; colunm++)
+	//{		
+	//	columns[colunm].PresentNode_Reset();
+	//	for (size_t i = 0; i < columns[colunm].count; i++)
+	//	{
+	//		columns[colunm].PresentNode_Next();
+	//		for (size_t column_r = 0; column_r < 9; column_r++)
+	//		{
+	//			have[colunm][column_r][columns[colunm].present_node->value[column_r]] = true;
+	//		}
+	//	}
+	//	
+	//}
+	//for (size_t row = 0; row < 9; row++)
+	//{
+	//	rows[row].PresentNode_Reset();
+	//	rows[row].PresentNode_Next();
+	//	int i_count = rows[row].count;
+	//	for (size_t i = 0; i < i_count; i++)
+	//	{
+	//		for (size_t c = 0; c < 10; c++)
+	//		{
+	//			if (c==9)
+	//			{
+	//				rows[row].PresentNode_Next();
+	//				break;
+	//			}
+	//			else
+	//			{
+	//				if (!have[c][row][rows[row].present_node->value[c]])
+	//				{
+	//					rows[row].PresentNode_Delete();
+	//					break;
+	//				}
+	//			}				
+	//		}
+	//	}
+	//}
+	//NewDelete_DeleteSave(del);
 
 
 	PrintTime(); std::cout << "每行剩余变化的数量。" << std::endl;
@@ -565,17 +692,7 @@ int main()
 
 
 	PrintTime(); std::cout << "释放资源。" << std::endl;
-	for (int i = 0; i < 9; i++)
-	{
-		for (int j = 0; j < 362880; j++)
-		{
-			//在C++中，delete 关键字用于释放由 new 操作符分配的内存。
-			//如果你提到的“delete会递归”是指在删除一个对象时，该对象内部可能还有指向其他对象的指针，并且这些对象也需要被删除，那么答案是不，delete 不会自动递归删除对象内部的成员。
-			//如果你需要删除一个对象及其内部所有引用的对象，你需要手动做这件事。
-			delete[] del[i][j]->value;
-		}
-	}
-	delete[] del;
+	NewDelete_DeleteSave(del);
 
 
 	PrintTime(); std::cout << "Hello World!" << std::endl;
