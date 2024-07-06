@@ -15,13 +15,16 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="弃用。排列枚举，但vector.erase太慢，尝试链表.cpp">
+    <ClCompile Include="V1弃用，发现排列枚举.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="弃用。排列枚举，算法不行，换成链表依旧慢.cpp">
+    <ClCompile Include="V2弃用，V1的vector.erase太慢，改为链表..cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="suduku solution.cpp">
+    <ClCompile Include="V3，改用暴力枚举，比排列枚举快无数倍.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="V4弃用，把V3的递归改为循环，反而更慢了.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

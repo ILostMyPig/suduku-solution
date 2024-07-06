@@ -1,7 +1,6 @@
-// 每行都是1-9的排列，根据排列来枚举，就不用所有数了。以此来增加枚举的速度。
-// vector.erase在删除末尾元素时，速度很快，但删除中间元素则太慢。
-// 据查，是因为要把删除位置之后的元素全部前移。
-// 故，改用链表，以避免此操作。
+// 每行都是1-9的排列，先生成每行的所有排列，枚举排列，避免了枚举行中有重复值的情况。
+// 以此来减少枚举量，提高解数独的速度。
+
 
 #ifdef COMPILE_THIS_FILE
 // suduku solution.cpp : 此文件包含 "main" 函数。程序执行将在此处开始并结束。
@@ -333,7 +332,7 @@ int main()
 
 	std::vector<std::vector<int*>> rows(9);
 
-	PrintTime(); std::cout << "填充数据，每行362880种变化。" << std::endl;
+	PrintTime(3); std::cout << "填充数据，每行362880种变化。" << std::endl;
 	int a[9] = { 1,2,3,4,5,6,7,8,9 };
 	for (size_t r = 0; r < 9; r++)
 	{
@@ -377,14 +376,14 @@ int main()
 		{0,0,0,0,0,0,0,9,0}
 	};
 
-	PrintTime(); std::cout << "根据题目的数字，剔除不需要的变化。" << std::endl;
+	PrintTime(3); std::cout << "根据题目的数字，剔除不需要的变化。" << std::endl;
 	for (size_t r = 0; r < 9; r++)
 	{
 		DeleteWrong(rows, r, suduku);
 	}
 
 
-	PrintTime(); std::cout << "每行剩余变化的数量。" << std::endl;
+	PrintTime(3); std::cout << "每行剩余变化的数量。" << std::endl;
 	for (size_t i = 0; i < 9; i++)
 	{
 		std::cout << "row " << i << " = " << rows[i].size() << std::endl;
@@ -407,7 +406,7 @@ int main()
 
 	// 枚举变化较少的行，依次设其为已知数字的行，然后进行一次剔除，最后枚举结果。
 
-	//std::cout << "获取变化最少的行的索引。"; PrintTime(); std::cout << std::endl;
+	//std::cout << "获取变化最少的行的索引。"; PrintTime(3); std::cout << std::endl;
 	int rows_size[9] = { 0 };
 	for (size_t i = 0; i < 9; i++)
 	{
@@ -428,7 +427,7 @@ int main()
 		}
 		DeleteWrong(rows_copy, min_position, suduku);
 
-		//std::cout << "获取变化第二少的行的索引。"; PrintTime(); std::cout << std::endl;
+		//std::cout << "获取变化第二少的行的索引。"; PrintTime(3); std::cout << std::endl;
 		int rows_size2[9] = { 0 };
 		for (size_t i = 0; i < 9; i++)
 		{
@@ -452,7 +451,7 @@ int main()
 
 
 
-			//std::cout << "获取变化第三少的行的索引。"; PrintTime(); std::cout << std::endl;
+			//std::cout << "获取变化第三少的行的索引。"; PrintTime(3); std::cout << std::endl;
 			int rows_size3[9] = { 0 };
 			for (size_t i = 0; i < 9; i++)
 			{
@@ -476,7 +475,7 @@ int main()
 
 				DeleteWrong(rows_copy3, min_position3, suduku);
 
-				//std::cout << "获取变化第四少的行的索引。"; PrintTime(); std::cout << std::endl;
+				//std::cout << "获取变化第四少的行的索引。"; PrintTime(3); std::cout << std::endl;
 				int rows_size4[9] = { 0 };
 				for (size_t i = 0; i < 9; i++)
 				{
@@ -501,7 +500,7 @@ int main()
 
 					DeleteWrong(rows_copy4, min_position4, suduku);
 
-					//std::cout << "获取变化第五少的行的索引。"; PrintTime(); std::cout << std::endl;
+					//std::cout << "获取变化第五少的行的索引。"; PrintTime(3); std::cout << std::endl;
 					int rows_size5[9] = { 0 };
 					for (size_t i = 0; i < 9; i++)
 					{
@@ -528,7 +527,7 @@ int main()
 						DeleteWrong(rows_copy5, min_position5, suduku);
 
 
-						//std::cout << "获取变化第6少的行的索引。"; PrintTime(); std::cout << std::endl;
+						//std::cout << "获取变化第6少的行的索引。"; PrintTime(3); std::cout << std::endl;
 						int rows_size6[9] = { 0 };
 						for (size_t i = 0; i < 9; i++)
 						{
@@ -557,7 +556,7 @@ int main()
 
 
 
-							//std::cout << "获取变化第6少的行的索引。"; PrintTime(); std::cout << std::endl;
+							//std::cout << "获取变化第6少的行的索引。"; PrintTime(3); std::cout << std::endl;
 							int rows_size7[9] = { 0 };
 							for (size_t i = 0; i < 9; i++)
 							{
@@ -697,7 +696,7 @@ int main()
 
 
 
-																			PrintTime(); std::cout << "无重复的数字：" << std::endl;
+																			PrintTime(3); std::cout << "无重复的数字：" << std::endl;
 																			for (size_t okr = 0; okr < 9; okr++) // 输出数字
 																			{
 																				for (size_t okc = 0; okc < 9; okc++)
@@ -775,7 +774,7 @@ int main()
 
 
 
-	PrintTime(); std::cout << "Hello World!" << std::endl;
+	PrintTime(3); std::cout << "Hello World!" << std::endl;
 	return 0;
 }
 

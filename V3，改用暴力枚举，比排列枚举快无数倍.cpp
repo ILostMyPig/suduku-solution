@@ -1,5 +1,5 @@
-// 暴力枚举。
-// 白折腾了。弄了排列枚举，即使换了链表，也远不及暴力枚举的效率高。
+// 改用暴力枚举。
+// 白折腾了。弄了排列枚举，算法比暴力枚举复杂得，但即使换了链表，也远不及暴力枚举的效率高。
 
 #define COMPILE_THIS_FILE
 #ifdef COMPILE_THIS_FILE
@@ -98,10 +98,8 @@ void EnumLoop(int(&suduku)[9][9], int(&enum_suduku)[9][9], int r, int c)
 	}
 	else if (suduku[r][c] != 0)
 	{
-		if (CheckSameNum(enum_suduku, r, c))
-		{
 			EnumLoop(suduku, enum_suduku, r, c);
-		}		
+		
 	}
 	else
 	{
@@ -123,7 +121,7 @@ void EnumLoop(int(&suduku)[9][9], int(&enum_suduku)[9][9], int r, int c)
 
 int main()
 {
-	std::cout << "Hello World!\n";
+	PrintTime(6); std::cout << "Hello World!\n";
 
 
 #pragma region suduku
@@ -180,7 +178,21 @@ int main()
 
 
 
-	PrintTime(); std::cout << "Hello World!" << std::endl;
+	PrintTime(6); std::cout << "Hello World!" << std::endl;
 	return 0;
 }
+
+//2024年 7月 6日6周187天19时12分51秒0夏令时     0单次耗时(微秒)     1总耗时(微秒)Hello World!
+//发现答案：
+//736518429
+//845972631
+//192364578
+//568123947
+//423796185
+//971845263
+//657289314
+//289431756
+//314657892
+//2024年 7月 6日6周187天19时12分51秒0夏令时  4835单次耗时(微秒)  7780总耗时(微秒)Hello World!
+
 #endif // COMPILE_THIS_FILE

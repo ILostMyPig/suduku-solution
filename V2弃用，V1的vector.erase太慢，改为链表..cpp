@@ -1,5 +1,6 @@
-// 每行都是1-9的排列，根据排列来枚举，就不用所有数了。以此来增加枚举的速度。
-// 使用链表来替代vector，以避免删除元素速度慢的问题。
+// vector.erase在删除末尾元素时，速度很快，但删除中间元素则太慢。
+// 据查，是因为要把删除位置之后的元素全部前移。
+// 故，改用链表，以避免删除元素速度慢的问题。
 
 //#define COMPILE_THIS_FILE
 #ifdef COMPILE_THIS_FILE
@@ -463,7 +464,7 @@ void EnumLoop(TwoWay_Cyclic_LinkedList(&rows)[9], std::vector<int> least, int(&s
 											}
 
 											// 列、小宫格，均无重复
-											PrintTime(); std::cout << "列、小宫格，均无重复：" << std::endl;
+											PrintTime(3); std::cout << "列、小宫格，均无重复：" << std::endl;
 											for (size_t r = 0; r < 9; r++)
 											{
 												for (size_t c = 0; c < 9; c++)
@@ -563,15 +564,15 @@ int main()
 	TwoWay_Cyclic_LinkedList rows[9];
 
 
-	PrintTime(); std::cout << "填充数据，每行362880种变化。" << std::endl;
+	PrintTime(3); std::cout << "填充数据，每行362880种变化。" << std::endl;
 	FillDate(rows);
 
 
-	PrintTime(); std::cout << "记录完整节点，用于最后释放资源。" << std::endl;
+	PrintTime(3); std::cout << "记录完整节点，用于最后释放资源。" << std::endl;
 	node*** del = NewDelete_SaveNew(rows);
 
 
-	PrintTime(); std::cout << "根据题目的数字，剔除不需要的变化。" << std::endl;
+	PrintTime(3); std::cout << "根据题目的数字，剔除不需要的变化。" << std::endl;
 	for (int r = 0; r < 9; r++)
 	{
 		DeleteWrong(rows, r, suduku);
@@ -580,7 +581,7 @@ int main()
 
 	// 弃用。
 	// 和行剔除相比，虽然剔除的变化不同，但每个位置的剩余数字相同，所以该方法完全无用。
-	//PrintTime(); std::cout << "根据题目，按列剔除。" << std::endl;
+	//PrintTime(3); std::cout << "根据题目，按列剔除。" << std::endl;
 	//TwoWay_Cyclic_LinkedList columns[9];
 	//FillDate(columns);
 	//node*** del_c = NewDelete_SaveNew(columns);
@@ -648,23 +649,23 @@ int main()
 	//NewDelete_DeleteSave(del);
 
 
-	PrintTime(); std::cout << "每行剩余变化的数量。" << std::endl;
+	PrintTime(3); std::cout << "每行剩余变化的数量。" << std::endl;
 	for (size_t i = 0; i < 9; i++)
 	{
 		std::cout << "row " << i << " = " << rows[i].count << std::endl;
 	}
 
 
-	PrintTime(); std::cout << "从变化最少的行开始，边枚举边剔除。" << std::endl;
+	PrintTime(3); std::cout << "从变化最少的行开始，边枚举边剔除。" << std::endl;
 	std::vector<int> least;
 	EnumLoop(rows, least, suduku);
 
 
-	PrintTime(); std::cout << "释放资源。" << std::endl;
+	PrintTime(3); std::cout << "释放资源。" << std::endl;
 	NewDelete_DeleteSave(del);
 
 
-	PrintTime(); std::cout << "Hello World!" << std::endl;
+	PrintTime(3); std::cout << "Hello World!" << std::endl;
 	return 0;
 }
 

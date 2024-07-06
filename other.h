@@ -2,18 +2,12 @@
 #include <iostream>
 #include <chrono>
 #include <iomanip>
-/// <summary>
-/// 输出类似以下格式的时间（取决于你的系统时间）2023-03-21 12:34:56
-/// </summary>
-void PrintTime()
+
+void PrintTime(size_t ratio_second_lgX)
 {
 	static std::chrono::steady_clock::time_point begin_start = std::chrono::high_resolution_clock::now();
 	static std::chrono::steady_clock::time_point start = std::chrono::high_resolution_clock::now();
 	std::chrono::steady_clock::time_point end = std::chrono::high_resolution_clock::now();
-
-	std::string timing_unit = "(毫秒)";
-	auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
-	auto begin_elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(end - begin_start);
 
 	struct tm t;   //tm结构指针
 	time_t now;  //声明time_t类型变量
@@ -30,8 +24,29 @@ void PrintTime()
 	std::cout << std::setw(2) << t.tm_min << "分";
 	std::cout << std::setw(2) << t.tm_sec << "秒";
 	std::cout << t.tm_isdst << "夏令时";
-	std::cout << std::setw(6) << elapsed.count() << "单次耗时" << timing_unit;
-	std::cout << std::setw(6) << begin_elapsed.count() << "总耗时" << timing_unit;
+	switch (ratio_second_lgX)
+	{
+	case 0:
+		std::cout << std::setw(6) << (std::chrono::duration_cast<std::chrono::seconds>(end - start)).count() << "单次耗时(秒)";
+		std::cout << std::setw(6) << (std::chrono::duration_cast<std::chrono::seconds>(end - begin_start)).count() << "总耗时(秒)";
+		break;
+	case 3:
+		std::cout << std::setw(6) << (std::chrono::duration_cast<std::chrono::milliseconds>(end - start)).count() << "单次耗时(毫秒)";
+		std::cout << std::setw(6) << (std::chrono::duration_cast<std::chrono::milliseconds>(end - begin_start)).count() << "总耗时(毫秒)";
+		break;
+	case 6:
+		std::cout << std::setw(6) << (std::chrono::duration_cast<std::chrono::microseconds>(end - start)).count() << "单次耗时(微秒)";
+		std::cout << std::setw(6) << (std::chrono::duration_cast<std::chrono::microseconds>(end - begin_start)).count() << "总耗时(微秒)";
+		break;
+	case 9:
+		std::cout << std::setw(6) << (std::chrono::duration_cast<std::chrono::nanoseconds>(end - start)).count() << "单次耗时(纳秒)";
+		std::cout << std::setw(6) << (std::chrono::duration_cast<std::chrono::nanoseconds>(end - begin_start)).count() << "总耗时(纳秒)";
+		break;
+	default:
+		std::cout << "时间单位错误。";
+		break;
+	}
+	
 
 	start = std::chrono::high_resolution_clock::now();
 }
