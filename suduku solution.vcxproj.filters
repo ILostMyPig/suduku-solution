@@ -15,14 +15,19 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="弃用。vector.erase太慢，尝试链表.cpp">
+    <ClCompile Include="弃用。排列枚举，但vector.erase太慢，尝试链表.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="弃用。排列枚举，算法不行，换成链表依旧慢.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="suduku solution.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="源.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="other.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
